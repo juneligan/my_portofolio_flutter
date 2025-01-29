@@ -17,14 +17,14 @@ class SkillsMobile extends StatelessWidget {
             // platforms
             for(int i = 0; i < platformItems.length; i++)
               Container(
-                margin: EdgeInsets.only(bottom: 5.0),
+                margin: const EdgeInsets.only(bottom: 5.0),
                 width: double.maxFinite,
                 decoration: BoxDecoration(
                     color: CustomColor.bgLight2,
                     borderRadius: BorderRadius.circular(5.0)
                 ),
                 child: ListTile(
-                  contentPadding: EdgeInsets.symmetric(
+                  contentPadding: const EdgeInsets.symmetric(
                       horizontal: 20.0, vertical: 10.0
                   ),
                   leading: Image.asset(platformItems[i]["img"], width: 26.0),

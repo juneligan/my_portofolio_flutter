@@ -43,7 +43,7 @@ class _HomePageState extends State<HomePage> {
             scrollDirection: Axis.vertical,
             child: Column(
               children: [
-                // main
+                // header
                 SizedBox(
                   key: navBarKeys.first,
                 ),
@@ -60,6 +60,7 @@ class _HomePageState extends State<HomePage> {
                       scaffoldKey.currentState?.openEndDrawer();
                     },
                   ),
+                // main
                 if (constraints.maxWidth >= kMinDesktopWidth)
                   MainDesktop(onNavButtonTap: (int navIndex) {
                     scrollToSection(navIndex);
