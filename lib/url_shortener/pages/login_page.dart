@@ -1,8 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:my_portfolio_flutter/constants/colors.dart';
-import 'package:my_portfolio_flutter/constants/size.dart';
+import 'package:my_portfolio_flutter/url_shortener/constants/size.dart';
+import 'package:my_portfolio_flutter/url_shortener/constants/colors.dart';
+import 'package:my_portfolio_flutter/url_shortener/widgets/otp_verifier_section.dart';
+import 'package:my_portfolio_flutter/url_shortener/widgets/phone_number_section.dart';
+import 'package:my_portfolio_flutter/widgets/custom_text_field.dart';
 import 'package:my_portfolio_flutter/widgets/header_desktop.dart';
 import 'package:my_portfolio_flutter/widgets/header_mobile.dart';
 
@@ -18,24 +21,28 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _otpController = TextEditingController();
   final GlobalKey _verifierKey = GlobalKey();
   final scaffoldKey = GlobalKey<ScaffoldState>();
-  final scrollController = ScrollController();
   final List<GlobalKey> navBarKeys = List.generate(4, (index) => GlobalKey());
   bool _showVerifier = false;
   final ScrollController _scrollController = ScrollController();
   Timer? _timer;
   int _secondsRemaining = 180;
   bool _isOtpResendEnabled = false;
+  bool _isOtpSectionEnabled = false;
 
   void _submit() {
     setState(() {
       _showVerifier = true;
       _secondsRemaining = 180;
       _isOtpResendEnabled = false;
+      _isOtpSectionEnabled = true;
       _startTimer();
     });
     Future.delayed(Duration(milliseconds: 300), () {
-      Scrollable.ensureVisible(_verifierKey.currentContext!,
-          duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
     });
   }
 
@@ -55,6 +62,25 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
+  void _resendOtp() {
+    setState(() {
+      _secondsRemaining = 180;
+      _isOtpResendEnabled = false;
+      _startTimer();
+    });
+  }
+
+  void _changeNumber() {
+    if (_isOtpResendEnabled) {
+      setState(() {
+        _showVerifier = false;
+        _phoneController.clear();
+        _otpController.clear();
+        _isOtpSectionEnabled = false;
+      });
+    }
+  }
+
   @override
   void dispose() {
     _timer?.cancel();
@@ -65,15 +91,15 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
     final screenWidth = screenSize.width;
+    final screenHeight = screenSize.height;
     return LayoutBuilder(builder: (context, constraints) {
       return Scaffold(
         key: scaffoldKey,
         backgroundColor: CustomColor.scaffoldBg,
         body: SingleChildScrollView(
-          controller: scrollController,
+          controller: _scrollController,
           scrollDirection: Axis.vertical,
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          child: Column(children: [
             SizedBox(
               key: navBarKeys.first,
             ),
@@ -93,96 +119,23 @@ class _LoginPageState extends State<LoginPage> {
 
             // Login
             SizedBox(height: 100),
-            TextField(
+            PhoneNumberSection(
+              enabled: !_isOtpSectionEnabled, // Disable if OTP timer is running
+              onPressed: _isOtpSectionEnabled ? null : _submit,
               controller: _phoneController,
-              keyboardType: TextInputType.phone,
-              style: TextStyle(color: Colors.white),
-              decoration: InputDecoration(
-                hintText: "Enter phone number",
-                hintStyle: TextStyle(color: Colors.grey),
-                filled: true,
-                fillColor: Color(0xFF1A1A1A),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide.none,
-                ),
-              ),
+              onSubmit: (value) => _submit(),
             ),
-            SizedBox(height: 20),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: _submit,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF4CAF50),
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                child: Text("Submit",
-                    style: TextStyle(fontSize: 18, color: Colors.white)),
-              ),
-            ),
+            // OTP section
             if (_showVerifier) ...[
-              SizedBox(height: 50),
-              Container(
-                key: _verifierKey,
-                padding: EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Color(0xFF262626),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    TextField(
-                      controller: _otpController,
-                      keyboardType: TextInputType.number,
-                      style: TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        hintText: "Enter OTP",
-                        hintStyle: TextStyle(color: Colors.grey),
-                        filled: true,
-                        fillColor: Color(0xFF1A1A1A),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide.none,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFF4CAF50),
-                          padding: EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        child: Text("Verify OTP",
-                            style:
-                                TextStyle(fontSize: 18, color: Colors.white)),
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    Center(
-                      child: Text(
-                        _isOtpResendEnabled
-                            ? "Resend OTP"
-                            : "Retry in $_secondsRemaining seconds",
-                        style: TextStyle(
-                            fontSize: 16,
-                            color: _isOtpResendEnabled
-                                ? Colors.green
-                                : Colors.grey),
-                      ),
-                    ),
-                  ],
-                ),
+              SizedBox(height: 100),
+              OtpVerifierSection(
+                isSectionEnabled: _isOtpSectionEnabled,
+                isResendEnabled: _isOtpResendEnabled,
+                secondsRemaining: _secondsRemaining,
+                onTap: _isOtpResendEnabled ? _resendOtp : null,
+                changeNumberCallback:
+                _isOtpResendEnabled ? _changeNumber : null,
+                onPressed: () {}, // this will enable the button to green
               ),
             ],
           ]),
