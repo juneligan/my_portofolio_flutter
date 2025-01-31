@@ -29,13 +29,13 @@ class OtpVerifierSection extends StatelessWidget {
     return Container(
       height: screenHeight - 100,
       key: key,
-      padding: EdgeInsets.all(20),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: CustomColor.bgLight1,
         borderRadius: BorderRadius.circular(8),
       ),
       child: ConstrainedBox(
-        constraints: BoxConstraints(
+        constraints: const BoxConstraints(
           minWidth: 300,
           maxWidth: 300,
           minHeight: 100,
@@ -53,23 +53,23 @@ class OtpVerifierSection extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: onPressed,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF4CAF50),
-                  padding: EdgeInsets.symmetric(vertical: 16),
+                  backgroundColor: const Color(0xFF4CAF50),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                child: Text("Verify OTP",
+                child: const Text("Verify OTP",
                     style: TextStyle(fontSize: 18, color: Colors.white)),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Center(
               child: GestureDetector(
                 onTap: onTap,
@@ -85,7 +85,7 @@ class OtpVerifierSection extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Center(
               child: GestureDetector(
                 onTap: isResendEnabled ? changeNumberCallback : null,

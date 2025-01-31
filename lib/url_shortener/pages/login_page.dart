@@ -9,6 +9,7 @@ import 'package:my_portfolio_flutter/url_shortener/widgets/otp_verifier_section.
 import 'package:my_portfolio_flutter/url_shortener/widgets/phone_number_section.dart';
 import 'package:my_portfolio_flutter/widgets/header_desktop.dart';
 import 'package:my_portfolio_flutter/widgets/header_mobile.dart';
+import 'package:telephone_check/telephone_check.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -31,11 +32,32 @@ class _LoginPageState extends State<LoginPage> {
   String? _phoneError;
   String? _otpError;
 
+  @override
+  void initState() {
+    super.initState();
+    _phoneController.text = "+639";
+  }
+
   void _submit() {
+    String phNumber = _phoneController.text;
     setState(() {
-      if (_phoneController.text.length != 11) {
-        // phone number should start from 0
+      if (!TelephoneChecker.isValid(phNumber)) {
         _phoneError = "Invalid phone number";
+        return;
+      }
+      bool validWithPlusSign = phNumber.startsWith("+639");
+      bool validDigitsOnly = phNumber.startsWith("639");
+      if (!(validWithPlusSign || validDigitsOnly)) {
+        _phoneError = "Invalid! PH mobile numbers only";
+        return;
+      }
+      if ((validWithPlusSign && phNumber.length < 13) ||
+          (validDigitsOnly && phNumber.length < 12)) {
+        _phoneError = "Invalid! Lacking numbers";
+        return;
+      } else if ((validWithPlusSign && phNumber.length > 13) ||
+          (validDigitsOnly && phNumber.length > 12)) {
+        _phoneError = "Invalid! more than the required digits";
         return;
       }
       _phoneError = null;
@@ -45,18 +67,20 @@ class _LoginPageState extends State<LoginPage> {
       _isOtpSectionEnabled = true;
       _startTimer();
     });
-    Future.delayed(Duration(milliseconds: 300), () {
-      _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
-        duration: Duration(milliseconds: 500),
-        curve: Curves.easeInOut,
-      );
-    });
+    if (_phoneError == null) { // should only move/animate if no errors
+      Future.delayed(const Duration(milliseconds: 300), () {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+        );
+      });
+    }
   }
 
   void _startTimer() {
     _timer?.cancel();
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_secondsRemaining > 0) {
         setState(() {
           _secondsRemaining--;
@@ -82,7 +106,7 @@ class _LoginPageState extends State<LoginPage> {
     if (_isOtpResendEnabled) {
       setState(() {
         _showVerifier = false;
-        _phoneController.clear();
+        _phoneController.text = "+639";
         _otpController.clear();
         _isOtpSectionEnabled = false;
       });
@@ -123,7 +147,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
 
             // Login
-            SizedBox(height: 100),
+            const SizedBox(height: 100),
             PhoneNumberSection(
               enabled: !_isOtpSectionEnabled,
               // Disable if OTP timer is running
@@ -134,7 +158,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             // OTP section
             if (_showVerifier) ...[
-              SizedBox(height: 100),
+              const SizedBox(height: 100),
               OtpVerifierSection(
                 isSectionEnabled: _isOtpSectionEnabled,
                 isResendEnabled: _isOtpResendEnabled,

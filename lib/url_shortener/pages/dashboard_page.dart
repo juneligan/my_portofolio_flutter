@@ -16,7 +16,7 @@ class _DashboardPageState extends State<DashboardPage> {
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: CustomColor.scaffoldBg,
-      body: SingleChildScrollView(
+      body: const SingleChildScrollView(
         child: Center(
           child: Text("Welcome to June's Place"),
         ),

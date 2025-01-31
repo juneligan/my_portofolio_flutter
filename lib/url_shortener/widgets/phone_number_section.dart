@@ -28,7 +28,7 @@ class PhoneNumberSection extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(25, 20, 25, 60),
         child: Column(children: [
           ConstrainedBox(
-            constraints: BoxConstraints(
+            constraints: const BoxConstraints(
               minWidth: 300,
               maxWidth: 300,
               minHeight: 100,
@@ -36,27 +36,27 @@ class PhoneNumberSection extends StatelessWidget {
             child: Column(
               children: [
                 CustomTextField(
-                  hintText: "Enter Phone Number",
+                  hintText: "+639",
                   controller: controller,
                   onSubmitted: onSubmit,
                   enabled: enabled,
                   // Disable if OTP timer is running
                   errorText: errorText,
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 SizedBox(
                   height: 50,
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: onPressed,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF4CAF50),
-                      padding: EdgeInsets.symmetric(vertical: 16),
+                      backgroundColor: const Color(0xFF4CAF50),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                    child: Text("Submit",
+                    child: const Text("Submit",
                         style: TextStyle(fontSize: 18, color: Colors.white)),
                   ),
                 ),
