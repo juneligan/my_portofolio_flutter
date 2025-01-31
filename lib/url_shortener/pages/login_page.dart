@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:my_portfolio_flutter/routes/route_names.dart';
 import 'package:my_portfolio_flutter/url_shortener/constants/size.dart';
 import 'package:my_portfolio_flutter/url_shortener/constants/colors.dart';
 import 'package:my_portfolio_flutter/url_shortener/widgets/otp_verifier_section.dart';
@@ -142,9 +144,10 @@ class _LoginPageState extends State<LoginPage> {
                     _isOtpResendEnabled ? _changeNumber : null,
                 errorText: _otpError,
                 onPressed: () {
-                  setState(() {
-                    _otpError = "Invalid OTP, please try again";
-                  });
+                  context.goNamed(RouteNames.dashboard);
+                  // setState(() {
+                  //   _otpError = "Invalid OTP, please try again";
+                  // });
                 }, // this will enable the button to green
               ),
             ],
