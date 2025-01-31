@@ -3,17 +3,20 @@ import 'package:my_portfolio_flutter/url_shortener/constants/colors.dart';
 import 'package:my_portfolio_flutter/widgets/custom_text_field.dart';
 
 class PhoneNumberSection extends StatelessWidget {
-  const PhoneNumberSection(
-      {super.key,
-      this.controller,
-      this.onSubmit,
-      this.enabled = true,
-      this.onPressed});
+  const PhoneNumberSection({
+    super.key,
+    this.controller,
+    this.onSubmit,
+    this.enabled = true,
+    this.onPressed,
+    this.errorText,
+  });
 
   final TextEditingController? controller;
   final ValueChanged<String>? onSubmit;
   final bool enabled;
   final VoidCallback? onPressed;
+  final String? errorText;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +39,9 @@ class PhoneNumberSection extends StatelessWidget {
                   hintText: "Enter Phone Number",
                   controller: controller,
                   onSubmitted: onSubmit,
-                  enabled: enabled, // Disable if OTP timer is running
+                  enabled: enabled,
+                  // Disable if OTP timer is running
+                  errorText: errorText,
                 ),
                 SizedBox(height: 20),
                 SizedBox(

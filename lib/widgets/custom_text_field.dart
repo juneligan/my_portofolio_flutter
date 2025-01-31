@@ -8,7 +8,8 @@ class CustomTextField extends StatelessWidget {
     this.maxLines = 1,
     this.hintText,
     this.onSubmitted,
-    this.enabled = true
+    this.enabled = true,
+    this.errorText,
   });
 
   final TextEditingController? controller;
@@ -16,6 +17,7 @@ class CustomTextField extends StatelessWidget {
   final String? hintText;
   final ValueChanged<String>? onSubmitted;
   final bool enabled;
+  final String? errorText;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +25,7 @@ class CustomTextField extends StatelessWidget {
         controller: controller,
         maxLines: maxLines,
         style: const TextStyle(color: CustomColor.scaffoldBg),
-        onSubmitted: onSubmitted?? (value) => {},
+        onSubmitted: onSubmitted ?? (value) => {},
         enabled: enabled,
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.all(16.0),
@@ -34,6 +36,7 @@ class CustomTextField extends StatelessWidget {
           border: getInputBorder,
           hintText: hintText,
           hintStyle: const TextStyle(color: CustomColor.hintDart),
+          errorText: errorText,
         ));
   }
 

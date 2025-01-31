@@ -3,13 +3,16 @@ import 'package:my_portfolio_flutter/url_shortener/constants/colors.dart';
 import 'package:my_portfolio_flutter/widgets/custom_text_field.dart';
 
 class OtpVerifierSection extends StatelessWidget {
-  const OtpVerifierSection({super.key,
+  const OtpVerifierSection({
+    super.key,
     this.onTap,
     this.isResendEnabled = true,
     this.secondsRemaining = 0,
     this.changeNumberCallback,
     this.isSectionEnabled = true,
-    this.onPressed});
+    this.onPressed,
+    this.errorText,
+  });
 
   final bool isSectionEnabled;
   final GestureTapCallback? onTap;
@@ -17,12 +20,11 @@ class OtpVerifierSection extends StatelessWidget {
   final int secondsRemaining;
   final GestureTapCallback? changeNumberCallback;
   final VoidCallback? onPressed;
+  final String? errorText;
 
   @override
   Widget build(BuildContext context) {
-    final screenSize = MediaQuery
-        .of(context)
-        .size;
+    final screenSize = MediaQuery.of(context).size;
     final screenHeight = screenSize.height;
     return Container(
       height: screenHeight - 100,
@@ -45,7 +47,10 @@ class OtpVerifierSection extends StatelessWidget {
               opacity: isSectionEnabled ? 1.0 : 0.3,
               child: IgnorePointer(
                 ignoring: !isSectionEnabled,
-                child: CustomTextField(hintText: "Enter OTP"),
+                child: CustomTextField(
+                  hintText: "Enter OTP",
+                  errorText: errorText,
+                ),
               ),
             ),
             SizedBox(height: 20),
@@ -76,7 +81,7 @@ class OtpVerifierSection extends StatelessWidget {
                       fontSize: 16,
                       color: isResendEnabled ? Colors.green : Colors.grey,
                       decoration:
-                      isResendEnabled ? TextDecoration.underline : null),
+                          isResendEnabled ? TextDecoration.underline : null),
                 ),
               ),
             ),
@@ -90,7 +95,7 @@ class OtpVerifierSection extends StatelessWidget {
                       fontSize: 16,
                       color: isResendEnabled ? Colors.blue : Colors.grey,
                       decoration:
-                      isResendEnabled ? TextDecoration.underline : null),
+                          isResendEnabled ? TextDecoration.underline : null),
                 ),
               ),
             ),
