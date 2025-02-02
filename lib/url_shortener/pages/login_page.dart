@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:my_portfolio_flutter/routes/route_names.dart';
@@ -31,14 +32,23 @@ class _LoginPageState extends State<LoginPage> {
   bool _isOtpSectionEnabled = false;
   String? _phoneError;
   String? _otpError;
+  late Dio _dio;
 
   @override
   void initState() {
     super.initState();
     _phoneController.text = "+639";
+    final options = BaseOptions(
+      // baseUrl: 'http://localhost:8080/',
+      baseUrl: 'https://amusing-open-javelin.ngrok-free.app/',
+      connectTimeout: Duration(seconds: 5),
+      receiveTimeout: Duration(seconds: 3),
+      headers:{'ContentType': 'application/json'}
+    );
+    _dio = Dio(options);
   }
 
-  void _submit() {
+  Future<void> _submit() async {
     String phNumber = _phoneController.text;
     setState(() {
       if (!TelephoneChecker.isValid(phNumber)) {
@@ -61,23 +71,87 @@ class _LoginPageState extends State<LoginPage> {
         return;
       }
       _phoneError = null;
-      _showVerifier = true;
-      _secondsRemaining = 180;
-      _isOtpResendEnabled = false;
-      _isOtpSectionEnabled = true;
-      _startTimer();
     });
-    if (_phoneError == null) { // should only move/animate if no errors
-      Future.delayed(const Duration(milliseconds: 300), () {
-        _scrollController.animateTo(
-          _scrollController.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 500),
-          curve: Curves.easeInOut,
-        );
+
+    if (_phoneError != null) {
+      return;
+    }
+
+    try {
+      Response response = await _dio.post(
+        '/api/auth/public/otp/login', // ---> new (API endpoint for login)
+        data: {'phoneNumber': _phoneController.text},
+      );
+
+      if (response.statusCode == 200) {
+        setState(() {
+          _showVerifier = true;
+          _secondsRemaining = 180;
+          _isOtpResendEnabled = false;
+          _isOtpSectionEnabled = true;
+          _startTimer();
+        });
+        Future.delayed(const Duration(milliseconds: 300), () {
+          _scrollController.animateTo(
+            _scrollController.position.maxScrollExtent,
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.easeInOut,
+          );
+        });
+      }
+    } catch (e) {
+      // _showServerErrorDialog(); // ---> new (Show alert dialog for server errors)
+      setState(() {
+        _phoneError = "Failed to send request. Please try again."; // ---> new (API error handling)
       });
     }
   }
 
+  Future<void> _verifyOtp(VoidCallback navigateToDashboard) async {
+    setState(() {
+      _otpError = null;
+    });
+
+    try {
+      Response response = await _dio.post(
+        '/api/auth/public/otp/authenticate', // ---> new (API endpoint for OTP verification)
+        data: {
+          'phoneNumber': _phoneController.text,
+          'otp': _otpController.text,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        // Handle success (e.g., navigate to another page)
+        navigateToDashboard();
+      } else {
+        setState(() {
+          _otpError = "Invalid OTP. Please try again."; // ---> new (Invalid OTP error)
+        });
+      }
+    } catch (e) {
+      // _showServerErrorDialog(); // ---> new (Show alert dialog for server errors)
+      setState(() {
+        _otpError = "Failed to verify OTP. Please try again."; // ---> new (API error handling)
+      });
+    }
+  }
+
+  void _showServerErrorDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Server Error"),
+        content: Text("Server is currently unavailable. Please try again later or contact support."),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text("OK"),
+          ),
+        ],
+      ),
+    );
+  }
   void _startTimer() {
     _timer?.cancel();
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -160,15 +234,16 @@ class _LoginPageState extends State<LoginPage> {
             if (_showVerifier) ...[
               const SizedBox(height: 100),
               OtpVerifierSection(
+                controller: _otpController,
                 isSectionEnabled: _isOtpSectionEnabled,
                 isResendEnabled: _isOtpResendEnabled,
                 secondsRemaining: _secondsRemaining,
                 onTap: _isOtpResendEnabled ? _resendOtp : null,
                 changeNumberCallback:
-                    _isOtpResendEnabled ? _changeNumber : null,
+                _isOtpResendEnabled ? _changeNumber : null,
                 errorText: _otpError,
                 onPressed: () {
-                  context.goNamed(RouteNames.dashboard);
+                  _verifyOtp(() => context.goNamed(RouteNames.dashboard));
                   // setState(() {
                   //   _otpError = "Invalid OTP, please try again";
                   // });

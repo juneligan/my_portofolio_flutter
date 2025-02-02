@@ -12,8 +12,10 @@ class OtpVerifierSection extends StatelessWidget {
     this.isSectionEnabled = true,
     this.onPressed,
     this.errorText,
+    this.controller,
   });
 
+  final TextEditingController? controller;
   final bool isSectionEnabled;
   final GestureTapCallback? onTap;
   final bool isResendEnabled;
@@ -48,6 +50,7 @@ class OtpVerifierSection extends StatelessWidget {
               child: IgnorePointer(
                 ignoring: !isSectionEnabled,
                 child: CustomTextField(
+                  controller: controller,
                   hintText: "Enter OTP",
                   errorText: errorText,
                 ),
