@@ -10,6 +10,7 @@ class PhoneNumberSection extends StatelessWidget {
     this.enabled = true,
     this.onPressed,
     this.errorText,
+    this.isLoading = false,
   });
 
   final TextEditingController? controller;
@@ -17,6 +18,7 @@ class PhoneNumberSection extends StatelessWidget {
   final bool enabled;
   final VoidCallback? onPressed;
   final String? errorText;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +45,7 @@ class PhoneNumberSection extends StatelessWidget {
                   // Disable if OTP timer is running
                   errorText: errorText,
                 ),
+                if (isLoading) const CircularProgressIndicator(), // ---> Loading indicator for login
                 const SizedBox(height: 20),
                 SizedBox(
                   height: 50,

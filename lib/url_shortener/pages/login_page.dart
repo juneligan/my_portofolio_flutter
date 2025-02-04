@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:my_portfolio_flutter/routes/route_names.dart';
+import 'package:my_portfolio_flutter/url_shortener/be_api/api_route_names.dart';
 import 'package:my_portfolio_flutter/url_shortener/constants/size.dart';
 import 'package:my_portfolio_flutter/url_shortener/constants/colors.dart';
 import 'package:my_portfolio_flutter/url_shortener/widgets/otp_verifier_section.dart';
@@ -32,6 +33,7 @@ class _LoginPageState extends State<LoginPage> {
   bool _isOtpSectionEnabled = false;
   String? _phoneError;
   String? _otpError;
+  bool _isLoading = false;
   late Dio _dio;
 
   @override
@@ -40,9 +42,9 @@ class _LoginPageState extends State<LoginPage> {
     _phoneController.text = "+639";
     final options = BaseOptions(
       // baseUrl: 'http://localhost:8080/',
-      baseUrl: 'https://amusing-open-javelin.ngrok-free.app/',
-      connectTimeout: Duration(seconds: 5),
-      receiveTimeout: Duration(seconds: 3),
+      baseUrl: ApiRouteNames.baseUrl,
+      connectTimeout: const Duration(seconds: 5),
+      receiveTimeout: const Duration(seconds: 3),
       headers:{'ContentType': 'application/json'}
     );
     _dio = Dio(options);
@@ -71,15 +73,19 @@ class _LoginPageState extends State<LoginPage> {
         return;
       }
       _phoneError = null;
+      _isLoading = true;
     });
 
     if (_phoneError != null) {
+      setState(() {
+        _isLoading = false;
+      });
       return;
     }
 
     try {
       Response response = await _dio.post(
-        '/api/auth/public/otp/login', // ---> new (API endpoint for login)
+        ApiRouteNames.otpLoginRegistration, // ---> new (API endpoint for login)
         data: {'phoneNumber': _phoneController.text},
       );
 
@@ -89,6 +95,7 @@ class _LoginPageState extends State<LoginPage> {
           _secondsRemaining = 180;
           _isOtpResendEnabled = false;
           _isOtpSectionEnabled = true;
+          _isLoading = false;
           _startTimer();
         });
         Future.delayed(const Duration(milliseconds: 300), () {
@@ -98,10 +105,15 @@ class _LoginPageState extends State<LoginPage> {
             curve: Curves.easeInOut,
           );
         });
+      } else {
+        setState(() {
+          _isLoading = false;
+        });
       }
     } catch (e) {
       // _showServerErrorDialog(); // ---> new (Show alert dialog for server errors)
       setState(() {
+        _isLoading = false;
         _phoneError = "Failed to send request. Please try again."; // ---> new (API error handling)
       });
     }
@@ -114,7 +126,7 @@ class _LoginPageState extends State<LoginPage> {
 
     try {
       Response response = await _dio.post(
-        '/api/auth/public/otp/authenticate', // ---> new (API endpoint for OTP verification)
+        ApiRouteNames.otpAuthentication, // ---> new (API endpoint for OTP verification)
         data: {
           'phoneNumber': _phoneController.text,
           'otp': _otpController.text,
@@ -141,12 +153,12 @@ class _LoginPageState extends State<LoginPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("Server Error"),
-        content: Text("Server is currently unavailable. Please try again later or contact support."),
+        title: const Text("Server Error"),
+        content: const Text("Server is currently unavailable. Please try again later or contact support."),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text("OK"),
+            child: const Text("OK"),
           ),
         ],
       ),
@@ -187,6 +199,18 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  Future<void> _refreshPage() async {
+    setState(() {
+      _phoneController.clear();
+      _otpController.clear();
+      _showVerifier = false;
+      _isOtpSectionEnabled = false;
+      _isOtpResendEnabled = false;
+      _phoneError = null;
+      _otpError = null;
+    });
+  }
+
   @override
   void dispose() {
     _timer?.cancel();
@@ -199,58 +223,61 @@ class _LoginPageState extends State<LoginPage> {
       return Scaffold(
         key: scaffoldKey,
         backgroundColor: CustomColor.scaffoldBg,
-        body: SingleChildScrollView(
-          controller: _scrollController,
-          scrollDirection: Axis.vertical,
-          child: Column(children: [
-            SizedBox(
-              key: navBarKeys.first,
-            ),
-            if (constraints.maxWidth >= kMinDesktopWidth)
-              HeaderDesktop(
-                onNavMenuTap: (int navIndex) {
-                  // scrollToSection(navIndex);
-                },
-              )
-            else
-              HeaderMobile(
-                onLogosTap: () {},
-                onMenuTap: () {
-                  scaffoldKey.currentState?.openEndDrawer();
-                },
+        body: RefreshIndicator(
+          onRefresh: _refreshPage,
+          child: SingleChildScrollView(
+            controller: _scrollController,
+            scrollDirection: Axis.vertical,
+            child: Column(children: [
+              SizedBox(
+                key: navBarKeys.first,
               ),
+              if (constraints.maxWidth >= kMinDesktopWidth)
+                HeaderDesktop(
+                  onNavMenuTap: (int navIndex) {
+                    // scrollToSection(navIndex);
+                  },
+                )
+              else
+                HeaderMobile(
+                  onLogosTap: () {},
+                  onMenuTap: () {
+                    scaffoldKey.currentState?.openEndDrawer();
+                  },
+                ),
 
-            // Login
-            const SizedBox(height: 100),
-            PhoneNumberSection(
-              enabled: !_isOtpSectionEnabled,
-              // Disable if OTP timer is running
-              onPressed: _isOtpSectionEnabled ? null : _submit,
-              controller: _phoneController,
-              onSubmit: (value) => _submit(),
-              errorText: _phoneError,
-            ),
-            // OTP section
-            if (_showVerifier) ...[
+              // Login
               const SizedBox(height: 100),
-              OtpVerifierSection(
-                controller: _otpController,
-                isSectionEnabled: _isOtpSectionEnabled,
-                isResendEnabled: _isOtpResendEnabled,
-                secondsRemaining: _secondsRemaining,
-                onTap: _isOtpResendEnabled ? _resendOtp : null,
-                changeNumberCallback:
-                _isOtpResendEnabled ? _changeNumber : null,
-                errorText: _otpError,
-                onPressed: () {
-                  _verifyOtp(() => context.goNamed(RouteNames.dashboard));
-                  // setState(() {
-                  //   _otpError = "Invalid OTP, please try again";
-                  // });
-                }, // this will enable the button to green
+              PhoneNumberSection(
+                enabled: !_isOtpSectionEnabled,
+                // Disable if OTP timer is running
+                onPressed: _isOtpSectionEnabled ? null : _submit,
+                controller: _phoneController,
+                onSubmit: (value) => _submit(),
+                errorText: _phoneError,
               ),
-            ],
-          ]),
+              // OTP section
+              if (_showVerifier) ...[
+                const SizedBox(height: 100),
+                OtpVerifierSection(
+                  controller: _otpController,
+                  isSectionEnabled: _isOtpSectionEnabled,
+                  isResendEnabled: _isOtpResendEnabled,
+                  secondsRemaining: _secondsRemaining,
+                  onTap: _isOtpResendEnabled ? _resendOtp : null,
+                  changeNumberCallback:
+                  _isOtpResendEnabled ? _changeNumber : null,
+                  errorText: _otpError,
+                  onPressed: () {
+                    _verifyOtp(() => context.goNamed(RouteNames.dashboard));
+                    // setState(() {
+                    //   _otpError = "Invalid OTP, please try again";
+                    // });
+                  }, // this will enable the button to green
+                ),
+              ],
+            ]),
+          ),
         ),
       );
     });
