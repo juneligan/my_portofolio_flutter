@@ -12,14 +12,14 @@ import 'package:my_portfolio_flutter/widgets/project_section.dart';
 import 'package:my_portfolio_flutter/widgets/skills_desktop.dart';
 import 'package:my_portfolio_flutter/widgets/skills_mobile.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class PortfolioPage extends StatefulWidget {
+  const PortfolioPage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<PortfolioPage> createState() => _PortfolioPageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _PortfolioPageState extends State<PortfolioPage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final scrollController = ScrollController();
   final List<GlobalKey> navBarKeys = List.generate(4, (index) => GlobalKey());

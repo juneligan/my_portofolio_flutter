@@ -12,6 +12,8 @@ dependencies:
   go_router: ^14.7.1
   dio: ^5.8.0+1
   telephone_check: ^0.1.0 # for checking the msisdn format
+  google_fonts: ^6.2.1
+  fl_chart: ^0.70.2
 
   cupertino_icons: ^1.0.8
 
