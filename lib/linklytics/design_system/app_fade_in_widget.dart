@@ -63,14 +63,14 @@ final List<Story> fadeInWidgetStories = [
           .toDouble();
 
       return Scaffold(
-        appBar: AppBar(title: Text('Storybook - FadeInWidget')),
+        appBar: AppBar(title: const Text('Storybook - FadeInWidget')),
         body: Center(
           child: AppFadeInWidget(
             duration: Duration(milliseconds: duration),
             delay: Duration(milliseconds: delay),
             offsetX: offsetX,
             offsetY: offsetY,
-            child: Text(
+            child: const Text(
               'Hello, Storybook!',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),

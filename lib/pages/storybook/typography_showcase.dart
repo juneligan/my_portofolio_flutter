@@ -9,23 +9,23 @@ class TypographyShowcase extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(title: const Text("Typography Showcase")),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      body: const Padding(
+        padding: EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             AppText(text: "Extra Small Text", type: TextType.xs),
-            const SizedBox(height: 5),
+            SizedBox(height: 5),
             AppText(text: "Small Text", type: TextType.sm),
-            const SizedBox(height: 5),
+            SizedBox(height: 5),
             AppText(text: "Medium Text", type: TextType.md),
-            const SizedBox(height: 5),
+            SizedBox(height: 5),
             AppText(text: "Large Text", type: TextType.lg),
-            const SizedBox(height: 5),
+            SizedBox(height: 5),
             AppText(text: "Extra Large Text", type: TextType.xl),
-            const SizedBox(height: 5),
+            SizedBox(height: 5),
             AppText(text: "Bold Text", type: TextType.bold),
-            const SizedBox(height: 5),
+            SizedBox(height: 5),
             AppText(text: "Italic Text", type: TextType.italic),
           ],
         ),

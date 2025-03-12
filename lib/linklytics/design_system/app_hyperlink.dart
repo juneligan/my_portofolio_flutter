@@ -53,7 +53,7 @@ final List<Story> appHyperlinkStories = [
           ValueListenableBuilder(
             valueListenable: isVisible,
             builder: (context, value, child) =>
-                value ? Text('Hyperlink Clicked!') : SizedBox.shrink(),
+                value ? const Text('Hyperlink Clicked!') : const SizedBox.shrink(),
           ),
         ],
       );
@@ -76,7 +76,7 @@ final List<Story> appHyperlinkStories = [
             builder: (context, value, child) => value
                 ? const Text('Custom Hyperlink Clicked!',
                     style: TextStyle(color: Colors.red))
-                : SizedBox.shrink(),
+                : const SizedBox.shrink(),
           ),
         ],
       );

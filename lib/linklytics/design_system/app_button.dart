@@ -323,7 +323,7 @@ final List<Story> appButtonStories = [
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
+          SizedBox(
             height: 50,
             child: AppButton(
               label: label,
@@ -344,8 +344,8 @@ final List<Story> appButtonStories = [
           ),
           const SizedBox(height: 10),
           Container(
-            padding: EdgeInsets.all(10),
-            margin: EdgeInsets.only(top: 10),
+            padding: const EdgeInsets.all(10),
+            margin: const EdgeInsets.only(top: 10),
             decoration: BoxDecoration(
               color: Colors.black87,
               borderRadius: BorderRadius.circular(8),
@@ -359,7 +359,7 @@ final List<Story> appButtonStories = [
                 isDisabled,
                 isOutlined,
               ),
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 14,
                 fontFamily: 'Courier', // Monospaced font
                 color: Colors.greenAccent, // Code-like color

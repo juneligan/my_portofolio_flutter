@@ -7,7 +7,6 @@ import 'package:my_portfolio_flutter/linklytics/design_system/app_text.dart';
 import 'package:my_portfolio_flutter/linklytics/design_system/app_text_styles.dart';
 import 'package:my_portfolio_flutter/linklytics/i18/texts.dart';
 import 'package:my_portfolio_flutter/routes/linklytics_routes.dart';
-import 'package:my_portfolio_flutter/routes/route_names.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomAppBar({super.key});

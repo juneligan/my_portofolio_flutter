@@ -4,6 +4,8 @@ import 'package:my_portfolio_flutter/linklytics/design_system/app_text.dart';
 import 'package:my_portfolio_flutter/linklytics/design_system/app_text_styles.dart';
 
 class AppNavBar extends StatelessWidget {
+  const AppNavBar({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Container(

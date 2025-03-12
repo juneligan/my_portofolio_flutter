@@ -4,7 +4,7 @@ import 'package:my_portfolio_flutter/linklytics/design_system/app_text_styles.da
 class AppTheme {
   static ThemeData lightTheme = ThemeData(
     primaryColor: Colors.blue,
-    colorScheme: ColorScheme.light(
+    colorScheme: const ColorScheme.light(
       primary: Colors.blue,
       secondary: Colors.purple,
     ),
@@ -12,7 +12,7 @@ class AppTheme {
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.blue,
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),

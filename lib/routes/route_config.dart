@@ -11,7 +11,6 @@ import 'package:my_portfolio_flutter/pages/my_portfolio/portfolio_page.dart';
 import 'package:my_portfolio_flutter/pages/storybook/button_showcase.dart';
 import 'package:my_portfolio_flutter/pages/storybook/storybook_app.dart';
 import 'package:my_portfolio_flutter/routes/linklytics_routes.dart';
-import 'package:my_portfolio_flutter/routes/route_names.dart';
 import 'package:my_portfolio_flutter/linklytics/pages/dashboard_page.dart';
 import 'package:my_portfolio_flutter/linklytics/pages/login_page.dart';
 import 'package:my_portfolio_flutter/linklytics/pages/register_page.dart';
@@ -92,7 +91,7 @@ class RouteConfig {
                 ),
                 buildLinkLyticsRoute(
                   LinkLyticsUri.otpLogin,
-                  OtpLoginPageV2(),
+                  const OtpLoginPageV2(),
                 ),
                 buildLinkLyticsRoute(
                   LinkLyticsUri.register,

@@ -5,6 +5,8 @@ import 'package:my_portfolio_flutter/linklytics/design_system/app_text_field.dar
 typedef ErrorCallback = void Function(String? error);
 
 class TextFieldWithErrorStory extends StatefulWidget {
+  const TextFieldWithErrorStory({super.key});
+
   @override
   _TextFieldWithErrorStoryState createState() => _TextFieldWithErrorStoryState();
 }

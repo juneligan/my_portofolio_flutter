@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:my_portfolio_flutter/linklytics/constants/app_spacing.dart';
 import 'package:my_portfolio_flutter/linklytics/design_system/app_fade_in_widget.dart';
-import 'package:my_portfolio_flutter/linklytics/design_system/app_hyperlink.dart';
 import 'package:my_portfolio_flutter/linklytics/i18/texts.dart';
 import 'package:my_portfolio_flutter/linklytics/design_system/app_button.dart';
-import 'package:my_portfolio_flutter/linklytics/design_system/app_predefined_size.dart';
 import 'package:my_portfolio_flutter/linklytics/design_system/app_sized_box.dart';
 import 'package:my_portfolio_flutter/linklytics/design_system/app_text.dart';
 import 'package:my_portfolio_flutter/linklytics/design_system/app_text_styles.dart';
 import 'package:my_portfolio_flutter/linklytics/widgets/feature_card.dart';
-import 'package:my_portfolio_flutter/routes/route_names.dart';
 
 class LinklyticsHomePage extends ConsumerWidget {
   const LinklyticsHomePage({super.key});
@@ -27,10 +23,9 @@ class LinklyticsHomePage extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 AppFadeInWidget(
+                  offsetY: -30,
                   child:
                       AppText(text: HomePageText.title.en, type: TextType.xl),
-                  // duration: Duration(milliseconds: 600),
-                  offsetY: -30,
                 ),
                 AppSizedBox.sm(),
                 AppFadeInWidget(
@@ -73,7 +68,7 @@ class LinklyticsHomePage extends ConsumerWidget {
                   style: AppTextStyles.textTheme.displayMedium,
                 ),
                 const SizedBox(height: 20),
-                Wrap(
+                const Wrap(
                   spacing: 20,
                   runSpacing: 20,
                   alignment: WrapAlignment.center,

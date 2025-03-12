@@ -29,6 +29,6 @@ enum LinkLyticsUri {
       return LinkLyticsUri.base.path;
     }
 
-    return '${LinkLyticsUri.base.path}${this.path}';
+    return '${LinkLyticsUri.base.path}$path';
   }
 }

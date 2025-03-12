@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:my_portfolio_flutter/constants/project_names.dart';
 import 'package:my_portfolio_flutter/routes/route_config.dart';
 
 void main() {

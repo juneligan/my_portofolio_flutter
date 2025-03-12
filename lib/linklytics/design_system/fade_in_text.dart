@@ -8,12 +8,12 @@ class FadeInText extends StatefulWidget {
   final bool moveDownward; // true = downward, false = upward
 
   const FadeInText({
-    Key? key,
+    super.key,
     required this.text,
     this.style,
     this.duration = const Duration(milliseconds: 600),
     this.moveDownward = true, // Default: move downward
-  }) : super(key: key);
+  });
 
   @override
   _FadeInTextState createState() => _FadeInTextState();

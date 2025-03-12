@@ -1,4 +1,3 @@
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:my_portfolio_flutter/linklytics/design_system/app_button.dart';
@@ -50,7 +49,7 @@ class LinkStorybookApp extends StatelessWidget {
         // Typography
         Story(
           name: 'Typography/Title',
-          builder: (context) => Text(
+          builder: (context) => const Text(
             'Large Title',
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
@@ -79,7 +78,7 @@ class LinkStorybookApp extends StatelessWidget {
             controller: TextEditingController(),
             label: "Search",
             variant: InputVariant.secondary, // Grey Border
-            prefixIcon: Icon(Icons.search),
+            prefixIcon: const Icon(Icons.search),
           ),
         ),
         Story(
@@ -103,7 +102,7 @@ class LinkStorybookApp extends StatelessWidget {
         ),
         Story(
           name: 'TextField/Error Handling',
-          builder: (context) => Center(child: TextFieldWithErrorStory()),
+          builder: (context) => const Center(child: TextFieldWithErrorStory()),
         ),
 
 
@@ -114,7 +113,7 @@ class LinkStorybookApp extends StatelessWidget {
         Story(
           name: 'Spacing/Example',
           builder: (context) => Padding(
-            padding: EdgeInsets.all(AppSpacing.md),
+            padding: const EdgeInsets.all(AppSpacing.md),
             child: Container(
               color: Colors.blue,
               width: 100,
@@ -125,7 +124,7 @@ class LinkStorybookApp extends StatelessWidget {
         Story(
           name: "Layout/ResponsiveContainer",
           builder: (context) => Scaffold(
-            appBar: AppBar(title: Text("Responsive Container Example")),
+            appBar: AppBar(title: const Text("Responsive Container Example")),
             body: ResponsiveContainer(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -135,7 +134,7 @@ class LinkStorybookApp extends StatelessWidget {
                     style: Theme.of(context).textTheme.labelLarge,
                     textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Text(
                     "It adapts based on screen size!",
                     style: Theme.of(context).textTheme.bodyLarge,

@@ -1,4 +1,3 @@
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
@@ -46,7 +45,7 @@ class StorybookApp extends StatelessWidget {
         // Typography
         Story(
           name: 'Typography/Title',
-          builder: (context) => Text(
+          builder: (context) => const Text(
             'Large Title',
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),

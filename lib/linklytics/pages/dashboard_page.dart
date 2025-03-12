@@ -12,6 +12,8 @@ import 'package:my_portfolio_flutter/linklytics/pages/analytics_page.dart';
 class DashboardPage extends ConsumerWidget {
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
+  DashboardPage({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return const Column(

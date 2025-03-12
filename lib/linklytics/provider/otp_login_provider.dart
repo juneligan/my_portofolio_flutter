@@ -127,7 +127,7 @@ class OtpLoginNotifier extends StateNotifier<OtpLoginState> {
   void verifyOtp(BuildContext context, VoidCallback navigateToDashboard) async {
     String otpError = "";
     String? otp = state.otpController.text;
-    if (otp == null || otp.isEmpty) {
+    if (otp.isEmpty) {
       otpError = "OTP is required";
     } else if (otp.length != 6) {
       otpError = "OTP is a 6 digit number";

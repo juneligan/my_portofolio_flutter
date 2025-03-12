@@ -5,7 +5,7 @@ enum ScreenSize { xs, sm, md, lg, xl }
 class ResponsiveContainer extends StatelessWidget {
   final Widget child;
 
-  const ResponsiveContainer({Key? key, required this.child}) : super(key: key);
+  const ResponsiveContainer({super.key, required this.child});
 
   static ScreenSize getScreenSize(BuildContext context) {
     double width = MediaQuery.of(context).size.width;

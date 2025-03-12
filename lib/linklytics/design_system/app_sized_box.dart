@@ -7,7 +7,7 @@ class AppSizedBox extends StatelessWidget {
   final double height;
   final double width;
 
-  const AppSizedBox._({Key? key, this.height = 0, this.width = 0}) : super(key: key);
+  const AppSizedBox._({this.height = 0, this.width = 0});
 
   // Predefined sizes
   factory AppSizedBox.xs({bool horizontal = false}) =>
@@ -37,31 +37,31 @@ final List<Story> appSizedBoxStories = [
   Story(
     name: 'Spacing/XS',
     builder: (context) => Column(
-      children: [Text('XS Spacing'), AppSizedBox.xs(), Text('Next Element')],
+      children: [const Text('XS Spacing'), AppSizedBox.xs(), const Text('Next Element')],
     ),
   ),
   Story(
     name: 'Spacing/SM',
     builder: (context) => Column(
-      children: [Text('SM Spacing'), AppSizedBox.sm(), Text('Next Element')],
+      children: [const Text('SM Spacing'), AppSizedBox.sm(), const Text('Next Element')],
     ),
   ),
   Story(
     name: 'Spacing/MD',
     builder: (context) => Column(
-      children: [Text('MD Spacing'), AppSizedBox.md(), Text('Next Element')],
+      children: [const Text('MD Spacing'), AppSizedBox.md(), const Text('Next Element')],
     ),
   ),
   Story(
     name: 'Spacing/LG',
     builder: (context) => Column(
-      children: [Text('LG Spacing'), AppSizedBox.lg(), Text('Next Element')],
+      children: [const Text('LG Spacing'), AppSizedBox.lg(), const Text('Next Element')],
     ),
   ),
   Story(
     name: 'Spacing/XL',
     builder: (context) => Column(
-      children: [Text('XL Spacing'), AppSizedBox.xl(), Text('Next Element')],
+      children: [const Text('XL Spacing'), AppSizedBox.xl(), const Text('Next Element')],
     ),
   ),
 ];

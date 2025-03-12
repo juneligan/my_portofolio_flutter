@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:my_portfolio_flutter/linklytics/i18/texts.dart';
 import 'package:my_portfolio_flutter/linklytics/design_system/app_sized_box.dart';
 import 'package:my_portfolio_flutter/linklytics/design_system/app_text.dart';
-import 'package:my_portfolio_flutter/linklytics/design_system/app_text_styles.dart';
 
 // class ShortenerHomePage extends StatefulWidget {
 //   const ShortenerHomePage({super.key});
@@ -13,6 +12,8 @@ import 'package:my_portfolio_flutter/linklytics/design_system/app_text_styles.da
 // }
 
 class ShortenerHomePage extends ConsumerWidget {
+  const ShortenerHomePage({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return SingleChildScrollView(
