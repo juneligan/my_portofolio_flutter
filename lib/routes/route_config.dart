@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:my_portfolio_flutter/linklytics/pages/about_page.dart';
 import 'package:my_portfolio_flutter/linklytics/pages/linklytics_home_page.dart';
-import 'package:my_portfolio_flutter/linklytics/pages/otp_login_page_v2.dart';
+import 'package:my_portfolio_flutter/linklytics/pages/login/otp_login_page_v2.dart';
+import 'package:my_portfolio_flutter/linklytics/pages/url_redirection_page.dart';
 import 'package:my_portfolio_flutter/linklytics/storybook/link_storybook_app.dart';
 import 'package:my_portfolio_flutter/pages/blog/blog_page.dart';
 import 'package:my_portfolio_flutter/pages/ecommerce/ecommerce.dart';
@@ -11,8 +12,8 @@ import 'package:my_portfolio_flutter/pages/my_portfolio/portfolio_page.dart';
 import 'package:my_portfolio_flutter/pages/storybook/button_showcase.dart';
 import 'package:my_portfolio_flutter/pages/storybook/storybook_app.dart';
 import 'package:my_portfolio_flutter/routes/linklytics_routes.dart';
-import 'package:my_portfolio_flutter/linklytics/pages/dashboard_page.dart';
-import 'package:my_portfolio_flutter/linklytics/pages/login_page.dart';
+import 'package:my_portfolio_flutter/linklytics/pages/dashboard/dashboard_page.dart';
+import 'package:my_portfolio_flutter/linklytics/pages/login/login_page.dart';
 import 'package:my_portfolio_flutter/linklytics/pages/register_page.dart';
 import 'package:my_portfolio_flutter/linklytics/widgets/main_layout.dart';
 
@@ -52,9 +53,9 @@ class RouteConfig {
           GoRoute(
               path: ecommercePath,
               builder: (context, state) => const EcommercePage()),
-          GoRoute(
-              path: LinkLyticsUri.dashboard.uri,
-              builder: (context, state) => DashboardPage()),
+          // GoRoute(
+          //     path: LinkLyticsUri.dashboard.uri,
+          //     builder: (context, state) => DashboardPage()),
           GoRoute(
               path: blogPath, builder: (context, state) => const BlogPage()),
           GoRoute(
@@ -100,6 +101,10 @@ class RouteConfig {
                 buildLinkLyticsRoute(
                   LinkLyticsUri.dashboard,
                   DashboardPage(),
+                ),
+                buildLinkLyticsRoute(
+                  LinkLyticsUri.urly,
+                  UrlRedirectionPage(),
                 ),
               ]),
         ]);

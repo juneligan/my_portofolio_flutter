@@ -8,7 +8,7 @@ class AboutPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Center(
         child: AppText(
-      text: 'This is the About Page',
+      'This is the About Page',
       type: TextType.xl,
     ));
   }

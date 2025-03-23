@@ -3,36 +3,44 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:my_portfolio_flutter/linklytics/be_api/api_route_names.dart';
+import 'package:my_portfolio_flutter/linklytics/be_integration/api_route_names.dart';
+import 'package:my_portfolio_flutter/linklytics/be_integration/generic_response.dart';
 import 'package:my_portfolio_flutter/linklytics/design_system/app_sized_box.dart';
+import 'package:my_portfolio_flutter/linklytics/provider/dio_provider.dart';
+import 'package:my_portfolio_flutter/linklytics/provider/jwt_token_notifier.dart';
+import 'package:my_portfolio_flutter/linklytics/provider/shared_preferences_provider.dart';
 import 'package:telephone_check/telephone_check.dart';
+
 import 'otp_login_state.dart';
 
 final otpLoginProvider =
     StateNotifierProvider<OtpLoginNotifier, OtpLoginState>((ref) {
-  return OtpLoginNotifier(ref);
+  final sharedPrefsAsync = ref.watch(sharedPreferencesProvider);
+  final jwtNotifier = ref.read(jwtTokenProvider.notifier);
+  final dioClient = ref.watch(dioProvider);
+
+  return sharedPrefsAsync.maybeWhen(
+    data: (sharedPrefs) => OtpLoginNotifier(ref, dioClient.getDio(), jwtNotifier),
+    orElse: () =>
+        OtpLoginNotifier(ref, dioClient.getDio(), jwtNotifier), // Handle loading or fallback
+  );
 });
 
 final otpVerificationTimerProvider = StateProvider<int>((ref) => 20);
 
 class OtpLoginNotifier extends StateNotifier<OtpLoginState> {
+  final JwtTokenNotifier _jwtTokenNotifier;
+  final Dio _dio;
   final Ref ref;
   Timer? _timer;
 
-  OtpLoginNotifier(this.ref)
+  OtpLoginNotifier(this.ref, this._dio, this._jwtTokenNotifier)
       : super(OtpLoginState(
           phoneController: TextEditingController(text: "+639"),
           otpController: TextEditingController(),
         ));
 
   final timerState = otpVerificationTimerProvider;
-
-  final Dio _dio = Dio(BaseOptions(
-    baseUrl: ApiRouteNames.baseUrl,
-    connectTimeout: const Duration(seconds: 5),
-    receiveTimeout: const Duration(seconds: 3),
-    headers: {'ContentType': 'application/json'},
-  ));
 
   void sendOtp(String phNumber, BuildContext context) async {
     if (_prePhoneNumberValidation(phNumber) != null) {
@@ -141,10 +149,7 @@ class OtpLoginNotifier extends StateNotifier<OtpLoginState> {
     try {
       Response response = await _dio.post(
         ApiRouteNames.otpAuthentication,
-        data: {
-          'phoneNumber': state.phoneController.text,
-          'otp': otp
-        },
+        data: {'phoneNumber': state.phoneController.text, 'otp': otp},
       );
       // Close the loading dialog
       Navigator.of(context, rootNavigator: true).pop();
@@ -157,7 +162,16 @@ class OtpLoginNotifier extends StateNotifier<OtpLoginState> {
                     : "Registration successful")),
           );
         }
+        final data = response.data;
+        GenericResponse<OtpAuthResponse?> apiResponse =
+            GenericResponse.fromJson(
+                data, (o) => o != null ? OtpAuthResponse.fromJson(o) : null);
+
+        final String? token = apiResponse.data?.accessToken;
+        _jwtTokenNotifier.updateToken(token!);
+
         navigateToDashboard();
+        reset();
       }
     } on DioException catch (_) {
       // Close the loading dialog
@@ -179,7 +193,7 @@ class OtpLoginNotifier extends StateNotifier<OtpLoginState> {
           content: Row(
             children: [
               const CircularProgressIndicator(),
-              AppSizedBox.xl(),
+              AppSizedBox.xl(horizontal: true),
               const Text("Processing..."),
             ],
           ),
@@ -188,7 +202,17 @@ class OtpLoginNotifier extends StateNotifier<OtpLoginState> {
     );
   }
 
-  void reset() {}
+  void reset() {
+    state = state.copyWith(
+      showVerifier: false,
+      isOtpResendEnabled: false,
+      isOtpSectionEnabled: false,
+      isLoading: false,
+      isLogin: true,
+      phoneController: TextEditingController(text: "+639"),
+      otpController: TextEditingController(),
+    );
+  }
 
   @override
   void dispose() {

@@ -9,9 +9,9 @@ class AppHyperlink extends StatelessWidget {
   final TextType? type;
   final Color? color;
 
-  const AppHyperlink({
+  const AppHyperlink(
+    this.text, {
     super.key,
-    required this.text,
     this.onTap,
     this.style,
     this.type,
@@ -24,7 +24,11 @@ class AppHyperlink extends StatelessWidget {
       onTap: onTap,
       child: MouseRegion(
           cursor: SystemMouseCursors.click,
-          child: AppText(text: text, type: type ?? TextType.md, color: color,)
+          child: AppText(
+            text,
+            type: type ?? TextType.md,
+            color: color,
+          )
           // Text(
           //   text,
           //   style: style ??
@@ -47,13 +51,14 @@ final List<Story> appHyperlinkStories = [
       return Column(
         children: [
           AppHyperlink(
-            text: 'Click Me',
+            'Click Me',
             onTap: () => isVisible.value = !isVisible.value,
           ),
           ValueListenableBuilder(
             valueListenable: isVisible,
-            builder: (context, value, child) =>
-                value ? const Text('Hyperlink Clicked!') : const SizedBox.shrink(),
+            builder: (context, value, child) => value
+                ? const Text('Hyperlink Clicked!')
+                : const SizedBox.shrink(),
           ),
         ],
       );
@@ -66,7 +71,7 @@ final List<Story> appHyperlinkStories = [
       return Column(
         children: [
           AppHyperlink(
-            text: 'Custom Link',
+            'Custom Link',
             onTap: () => isVisible.value = !isVisible.value,
             style: const TextStyle(
                 color: Colors.red, fontSize: 18, fontWeight: FontWeight.bold),
@@ -101,7 +106,7 @@ final List<Story> appHyperlinkStories = [
       return Column(
         children: [
           AppHyperlink(
-            text: text,
+            text,
             onTap: () {},
             style: TextStyle(color: color),
           ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:my_portfolio_flutter/linklytics/design_system/app_sizes.dart';
 
-enum TextType { xs, sm, md, lg, xl, bold, italic }
+enum TextType { xxs, xs, sm, md, lg, xl, xxl, bold, italic }
 
 class AppText extends StatelessWidget {
   final String text;
@@ -9,8 +10,8 @@ class AppText extends StatelessWidget {
   final bool bold;
   final bool italic;
 
-  const AppText({
-    required this.text,
+  const AppText(
+    this.text, {
     required this.type,
     this.bold = false,
     this.italic = false,
@@ -29,32 +30,33 @@ class AppText extends StatelessWidget {
 
   TextStyle _getTextStyle(TextType type, bool bold, bool italic) {
     switch (type) {
+      case TextType.xxs:
+        return _getStyle(AppSizes.txtXxs, bold, italic);
       case TextType.xs:
-        return TextStyle(
-          fontSize: 12,
-          fontWeight: bold ? FontWeight.bold : null,
-          fontStyle: italic ? FontStyle.italic : null,
-        );
+        return _getStyle(AppSizes.txtXs, bold, italic);
       case TextType.sm:
-        return TextStyle(fontSize: 14,
-          fontWeight: bold ? FontWeight.bold : null,
-          fontStyle: italic ? FontStyle.italic : null,);
+        return _getStyle(AppSizes.txtSm, bold, italic);
       case TextType.md:
-        return TextStyle(fontSize: 16,
-          fontWeight: bold ? FontWeight.bold : null,
-          fontStyle: italic ? FontStyle.italic : null,);
+        return _getStyle(AppSizes.txtMd, bold, italic);
       case TextType.lg:
-        return TextStyle(fontSize: 18,
-          fontWeight: bold ? FontWeight.bold : null,
-          fontStyle: italic ? FontStyle.italic : null,);
+        return _getStyle(AppSizes.txtLg, bold, italic);
       case TextType.xl:
-        return const TextStyle(fontSize: 22, fontWeight: FontWeight.bold);
+        return const TextStyle(fontSize: AppSizes.txtXl, fontWeight: FontWeight.bold);
+      case TextType.xxl:
+        return const TextStyle(
+            fontSize: AppSizes.txtXxxl, fontWeight: FontWeight.bold);
       case TextType.bold:
-        return const TextStyle(fontSize: 16, fontWeight: FontWeight.bold);
+        return const TextStyle(fontSize: AppSizes.txtMd, fontWeight: FontWeight.bold);
       case TextType.italic:
-        return const TextStyle(fontSize: 16, fontStyle: FontStyle.italic);
-      default:
-        return const TextStyle(fontSize: 16);
-    }
+        return const TextStyle(fontSize: AppSizes.txtMd, fontStyle: FontStyle.italic);
+      }
+  }
+
+  TextStyle _getStyle(double size, bool isBold, bool isItalic) {
+    return TextStyle(
+      fontSize: size,
+      fontWeight: isBold ? FontWeight.bold : null,
+      fontStyle: isItalic ? FontStyle.italic : null,
+    );
   }
 }

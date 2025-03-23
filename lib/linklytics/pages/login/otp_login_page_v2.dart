@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:my_portfolio_flutter/linklytics/i18/texts.dart';
 import 'package:my_portfolio_flutter/linklytics/design_system/app_button.dart';
+import 'package:my_portfolio_flutter/linklytics/design_system/app_hyperlink.dart';
 import 'package:my_portfolio_flutter/linklytics/design_system/app_sized_box.dart';
 import 'package:my_portfolio_flutter/linklytics/design_system/app_text.dart';
 import 'package:my_portfolio_flutter/linklytics/design_system/app_text_field.dart';
-import 'package:my_portfolio_flutter/linklytics/provider/otp_login_provider.dart';
-import 'package:my_portfolio_flutter/linklytics/provider/otp_login_state.dart';
+import 'package:my_portfolio_flutter/linklytics/i18/texts.dart';
 import 'package:my_portfolio_flutter/routes/linklytics_routes.dart';
 import 'package:my_portfolio_flutter/routes/route_names.dart';
+
+import 'otp_login_provider.dart';
+import 'otp_login_state.dart';
 
 class OtpLoginPageV2 extends ConsumerWidget {
   const OtpLoginPageV2({super.key});
@@ -49,7 +51,7 @@ class OtpLoginPageV2 extends ConsumerWidget {
         key: GlobalKey<FormState>(),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           AppText(
-            text: OtpLoginText.title.en,
+            OtpLoginText.title.en,
             type: TextType.xl,
             color: Colors.blueAccent,
           ),
@@ -71,9 +73,7 @@ class OtpLoginPageV2 extends ConsumerWidget {
           ),
           AppSizedBox.md(),
           AppButton(
-            label: state.isLogin
-                ? OtpLoginText.request.en
-                : OtpLoginText.submit.en,
+            state.isLogin ? OtpLoginText.request.en : OtpLoginText.submit.en,
             onPressed: () => state.isLogin
                 ? notifier.sendOtp(state.phoneController.text, context)
                 : notifier.verifyOtp(
@@ -82,7 +82,7 @@ class OtpLoginPageV2 extends ConsumerWidget {
           ),
           AppSizedBox.sm(),
           AppText(
-            text: OtpLoginText.description.en,
+            OtpLoginText.description.en,
             type: TextType.xs,
             color: Colors.blueGrey,
           ),
@@ -94,7 +94,7 @@ class OtpLoginPageV2 extends ConsumerWidget {
               child: Consumer(builder: (context, ref, child) {
                 final countdown = ref.watch(otpVerificationTimerProvider);
                 return AppText(
-                  text: state.isOtpResendEnabled
+                  state.isOtpResendEnabled
                       ? OtpLoginText.resend.en
                       : formatString(
                           OtpLoginText.retry.en,
@@ -106,13 +106,11 @@ class OtpLoginPageV2 extends ConsumerWidget {
               }),
             ),
             AppSizedBox.sm(),
-            GestureDetector(
-              onTap: state.isOtpResendEnabled ? state.reset() : null,
-              child: AppText(
-                text: OtpLoginText.changeNumber.en,
-                type: TextType.sm,
-                color: state.isOtpResendEnabled ? Colors.green : Colors.grey,
-              ),
+            AppHyperlink(
+              OtpLoginText.changeNumber.en,
+              onTap: state.isOtpResendEnabled ? notifier.reset : null,
+              type: TextType.sm,
+              color: state.isOtpResendEnabled ? Colors.green : Colors.grey,
             ),
           ] // If statement
         ]),

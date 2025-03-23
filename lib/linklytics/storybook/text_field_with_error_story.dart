@@ -8,7 +8,8 @@ class TextFieldWithErrorStory extends StatefulWidget {
   const TextFieldWithErrorStory({super.key});
 
   @override
-  _TextFieldWithErrorStoryState createState() => _TextFieldWithErrorStoryState();
+  _TextFieldWithErrorStoryState createState() =>
+      _TextFieldWithErrorStoryState();
 }
 
 class _TextFieldWithErrorStoryState extends State<TextFieldWithErrorStory> {
@@ -17,7 +18,8 @@ class _TextFieldWithErrorStoryState extends State<TextFieldWithErrorStory> {
 
   void _validateInput() {
     setState(() {
-      _errorText = _controller.text.isEmpty ? "This field cannot be empty" : null;
+      _errorText =
+          _controller.text.isEmpty ? "This field cannot be empty" : null;
     });
   }
 
@@ -33,7 +35,7 @@ class _TextFieldWithErrorStoryState extends State<TextFieldWithErrorStory> {
         ),
         const SizedBox(height: 10),
         AppButton(
-          label: "Validate",
+          "Validate",
           onPressed: _validateInput,
         ),
       ],

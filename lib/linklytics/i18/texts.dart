@@ -12,9 +12,17 @@ enum AppBarText {
   title('Linklytics'),
   home('Home'),
   about('About'),
-  signIn('SignIn');
+  signIn('SignIn'),
+  signOut('SignOut');
 
   const AppBarText(this.en);
+  final String en;
+}
+
+enum CommonText {
+  error('Error');
+
+  const CommonText(this.en);
   final String en;
 }
 

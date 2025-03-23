@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:my_portfolio_flutter/routes/route_names.dart';
-import 'package:my_portfolio_flutter/linklytics/be_api/api_route_names.dart';
+import 'package:my_portfolio_flutter/linklytics/be_integration/api_route_names.dart';
 import 'package:telephone_check/telephone_check.dart';
 
 class OtpLoginPage extends StatefulWidget {

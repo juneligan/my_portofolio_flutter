@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:my_portfolio_flutter/linklytics/design_system/app_button.dart';
 import 'package:my_portfolio_flutter/linklytics/design_system/app_fade_in_widget.dart';
@@ -23,13 +22,13 @@ class LinkStorybookApp extends StatelessWidget {
         // Buttons
         Story(
           name: 'Buttons/Primary',
-          builder: (context) => AppButton(
-              label: 'Primary', onPressed: () {}, type: ButtonType.primary),
+          builder: (context) =>
+              AppButton('Primary', onPressed: () {}, type: ButtonType.primary),
         ),
         Story(
           name: 'Buttons/Secondary',
           builder: (context) => AppButton(
-            label: 'Secondary',
+            'Secondary',
             onPressed: () {},
             type: ButtonType.secondary,
           ),
@@ -37,7 +36,7 @@ class LinkStorybookApp extends StatelessWidget {
         Story(
             name: 'Buttons/Error',
             builder: (context) => AppButton(
-                  label: 'Error',
+                  'Error',
                   onPressed: () {},
                   type: ButtonType.error,
                 )),
@@ -95,7 +94,8 @@ class LinkStorybookApp extends StatelessWidget {
           builder: (context) => AppTextField(
             controller: TextEditingController(),
             label: "OTP Code",
-            variant: InputVariant.success, // Green Border
+            variant: InputVariant.success,
+            // Green Border
             textInputAction: TextInputAction.done,
             onSubmitted: (value) => print("Submitted OTP: $value"),
           ),
@@ -104,7 +104,6 @@ class LinkStorybookApp extends StatelessWidget {
           name: 'TextField/Error Handling',
           builder: (context) => const Center(child: TextFieldWithErrorStory()),
         ),
-
 
         // Hyperlink Component
         ...appHyperlinkStories,

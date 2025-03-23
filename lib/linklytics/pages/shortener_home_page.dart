@@ -120,12 +120,12 @@ class ShortenerHomePage extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 AppText(
-                  text: HomePageText.title.en,
+                  HomePageText.title.en,
                   type: TextType.xl,
                 ),
                 AppSizedBox.sm(),
                 AppText(
-                  text: HomePageText.description.en,
+                  HomePageText.description.en,
                   type: TextType.md,
                 ),
                 const SizedBox(height: 20),

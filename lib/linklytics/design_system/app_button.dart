@@ -28,7 +28,7 @@ final isClickedProvider = StateProvider<bool>((ref) => false);
 
 class AppButton extends ConsumerWidget {
   final String label;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final ButtonType type;
   final ButtonSize size;
   final bool isOutlined;
@@ -36,9 +36,11 @@ class AppButton extends ConsumerWidget {
   final double borderRadius;
   final TextStyle? textStyle;
   final Color? outlineColor;
+  final double? fontSize;
+  final bool isLoading;
 
-  const AppButton({
-    required this.label,
+  const AppButton(
+    this.label, {
     required this.onPressed,
     this.type = ButtonType.primary,
     this.size = ButtonSize.medium,
@@ -47,6 +49,8 @@ class AppButton extends ConsumerWidget {
     this.borderRadius = AppSizes.radiusMedium,
     this.textStyle,
     this.outlineColor,
+    this.fontSize,
+    this.isLoading = false,
     super.key,
   });
 
@@ -54,7 +58,7 @@ class AppButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = _getButtonColors(type);
     final height = _getButtonHeight(size);
-    final fontSize = _getFontSize(size);
+    final fontSize = this.fontSize ?? _getFontSize(size);
     final width = _getButtonWidth(size, context);
     final isHovered = ref.watch(isHoveredProvider);
     final isClicked = ref.watch(isClickedProvider);
@@ -75,38 +79,32 @@ class AppButton extends ConsumerWidget {
     final defaultTextStyle = TextStyle(fontSize: fontSize, color: textColor);
 
     if (type == ButtonType.gradient) {
-      return MouseRegion(
-        cursor: SystemMouseCursors.click,
-        onEnter: (_) => ref.read(isHoveredProvider.notifier).state = true,
-        onExit: (_) => ref.read(isHoveredProvider.notifier).state = false,
-        child: GestureDetector(
-          onTapDown: (_) {
-            ref.read(isClickedProvider.notifier).state = true;
-          },
-          onTapUp: (_) {
-            ref.read(isClickedProvider.notifier).state = false;
-            onPressed();
-          },
-          onTapCancel: () {
-            ref.read(isClickedProvider.notifier).state = false;
-          },
-          // onTap: isDisabled ? null : onPressed,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 150),
-            width: width,
-            height: height,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: gradientColors,
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(borderRadius),
+      return Material(
+        color: Colors.transparent, // Ensures no extra background
+        child: Ink(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: gradientColors,
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
-            alignment: Alignment.center,
-            child: Text(
-              label,
-              style: textStyle?.copyWith(color: textColor) ?? defaultTextStyle,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(8),
+            onTap: onPressed,
+            child: Container(
+              width: width ?? double.infinity,
+              height: height - 8,
+              // -8 to make it the same height with elevaled button
+              alignment: Alignment.center,
+              child: isLoading
+                  ? getLoadingWidget(Colors.white)
+                  : Text(
+                      label,
+                      style: textStyle?.copyWith(color: textColor) ??
+                          defaultTextStyle,
+                    ),
             ),
           ),
         ),
@@ -133,7 +131,9 @@ class AppButton extends ConsumerWidget {
                       : null,
                 ),
               ),
-              child: Text(label, style: textStyle ?? defaultTextStyle),
+              child: isLoading
+                  ? getLoadingWidget(textColor)
+                  : Text(label, style: textStyle ?? defaultTextStyle),
             )
           : ElevatedButton(
               onPressed: isDisabled ? null : onPressed,
@@ -145,7 +145,9 @@ class AppButton extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(borderRadius),
                 ),
               ),
-              child: Text(label, style: textStyle ?? defaultTextStyle),
+              child: isLoading
+                  ? getLoadingWidget(textColor)
+                  : Text(label, style: textStyle ?? defaultTextStyle),
             ),
     );
   }
@@ -208,6 +210,14 @@ class AppButton extends ConsumerWidget {
         return double.infinity;
     }
   }
+
+  SizedBox getLoadingWidget(Color color) {
+    return SizedBox(
+      width: 20,
+      height: 20,
+      child: CircularProgressIndicator(strokeWidth: 2, color: color),
+    );
+  }
 }
 
 class _ButtonColors {
@@ -235,7 +245,7 @@ final List<Story> appButtonStories = [
     name: 'Buttons/Primary',
     builder: (context) => Center(
       child: AppButton(
-        label: 'Primary',
+        'Primary',
         onPressed: () {},
         type: ButtonType.primary,
         size: ButtonSize.medium,
@@ -247,7 +257,7 @@ final List<Story> appButtonStories = [
   Story(
     name: 'Buttons/Gradient',
     builder: (context) => AppButton(
-      label: 'Gradient',
+      'Gradient',
       onPressed: () {},
       type: ButtonType.gradient,
       size: ButtonSize.medium,
@@ -261,7 +271,7 @@ final List<Story> appButtonStories = [
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         AppButton(
-          label: 'Small',
+          'Small',
           onPressed: () {},
           type: ButtonType.primary,
           size: ButtonSize.small,
@@ -270,7 +280,7 @@ final List<Story> appButtonStories = [
         ),
         const SizedBox(height: 10),
         AppButton(
-          label: 'Medium',
+          'Medium',
           onPressed: () {},
           type: ButtonType.primary,
           size: ButtonSize.medium,
@@ -279,7 +289,7 @@ final List<Story> appButtonStories = [
         ),
         const SizedBox(height: 10),
         AppButton(
-          label: 'Large',
+          'Large',
           onPressed: () {},
           type: ButtonType.primary,
           size: ButtonSize.large,
@@ -326,7 +336,7 @@ final List<Story> appButtonStories = [
           SizedBox(
             height: 50,
             child: AppButton(
-              label: label,
+              label,
               onPressed: () {},
               type: type,
               size: size,
@@ -338,7 +348,7 @@ final List<Story> appButtonStories = [
           ),
           const SizedBox(height: 10),
           const AppText(
-            text: 'Flutter Code Preview',
+            'Flutter Code Preview',
             type: TextType.md,
             color: Colors.white,
           ),

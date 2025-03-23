@@ -57,5 +57,16 @@ class OtpLoginState {
     );
   }
 
-  reset() {}
+  reset() {
+
+    copyWith(
+      showVerifier: false,
+      isOtpResendEnabled: false,
+      isOtpSectionEnabled: false,
+      isLoading: false,
+      isLogin: true,
+      phoneController: TextEditingController(text: "+639"),
+      otpController: TextEditingController(),
+    );
+  }
 }

@@ -9,6 +9,7 @@ class LinklyticsPath {
   // static const String otpLoginPath = "/login/otp";
   static const List<String> linkLyticsPaths = [];
 
+
 }
 
 enum LinkLyticsUri {
@@ -19,6 +20,8 @@ enum LinkLyticsUri {
   login('/login'),
   register('/register'),
   storybook('/storybook'),
+  logout('/logout'),
+  urly('/urly')
   ;
 
   const LinkLyticsUri(this.path);

@@ -1,18 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:my_portfolio_flutter/linklytics/design_system/app_button.dart';
 import 'package:my_portfolio_flutter/linklytics/design_system/app_hyperlink.dart';
 import 'package:my_portfolio_flutter/linklytics/design_system/app_predefined_size.dart';
 import 'package:my_portfolio_flutter/linklytics/design_system/app_text.dart';
 import 'package:my_portfolio_flutter/linklytics/design_system/app_text_styles.dart';
 import 'package:my_portfolio_flutter/linklytics/i18/texts.dart';
+import 'package:my_portfolio_flutter/linklytics/provider/jwt_token_notifier.dart';
+import 'package:my_portfolio_flutter/linklytics/provider/token_provider.dart';
 import 'package:my_portfolio_flutter/routes/linklytics_routes.dart';
 
-class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
+class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
   const CustomAppBar({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isTokenExpired = ref.watch(tokenProvider);
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       decoration: const BoxDecoration(
@@ -26,7 +32,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           AppHyperlink(
-            text: AppBarText.title.en,
+            AppBarText.title.en,
             type: TextType.xl,
             color: Colors.white,
             onTap: () => context.go(LinkLyticsUri.base.uri),
@@ -43,7 +49,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 context,
                 () => context.go(LinkLyticsUri.about.uri),
               ),
-              _signUpButton(context),
+              _signUpButton(context, ref),
             ],
           ),
         ],
@@ -59,7 +65,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: AppPredefinedSize.md),
       child: AppHyperlink(
-        text: title,
+        title,
         type: TextType.md,
         color: Colors.white,
         onTap: onTap,
@@ -67,12 +73,26 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     );
   }
 
-  Widget _signUpButton(BuildContext context) {
+  Widget _signUpButton(BuildContext context, WidgetRef ref) {
+    final tokenState = ref.watch(jwtTokenProvider);
+    final isTokenExpired =
+        tokenState == null ? null : JwtDecoder.isExpired(tokenState);
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: AppPredefinedSize.md),
       child: AppButton(
-        label: AppBarText.signIn.en,
-        onPressed: () => context.go(LinkLyticsUri.otpLogin.uri),
+        isTokenExpired == null || isTokenExpired
+            ? AppBarText.signIn.en
+            : AppBarText.signOut.en,
+        onPressed: () {
+          if (isTokenExpired == null || !isTokenExpired) {
+            ref.read(jwtTokenProvider.notifier).removeToken();
+          }
+          context.go(
+            isTokenExpired == null || isTokenExpired
+                ? LinkLyticsUri.otpLogin.uri
+                : LinkLyticsUri.base.uri,
+          );
+        },
         type: ButtonType.error,
         size: ButtonSize.medium,
         textStyle: AppTextStyles.buttonText,

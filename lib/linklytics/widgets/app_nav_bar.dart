@@ -20,7 +20,7 @@ class AppNavBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          AppText(text: AppBarText.title.en, type: TextType.xl),
+          AppText(AppBarText.title.en, type: TextType.xl),
           Row(
             children: [
               _navItem(AppBarText.home.en),
