@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:my_portfolio_flutter/linklytics/design_system/app_button.dart';
+import 'package:my_portfolio_flutter/linklytics/design_system/app_date_range_selector.dart';
 import 'package:my_portfolio_flutter/linklytics/design_system/app_predefined_size.dart';
 import 'package:my_portfolio_flutter/linklytics/design_system/app_sized_box.dart';
 import 'package:my_portfolio_flutter/linklytics/design_system/app_sizes.dart';
@@ -23,7 +24,6 @@ class AnalyticsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final analyticsState = ref.watch(analyticsProvider);
-    final hasData = false;
 
     return Padding(
       padding: EdgeInsets.all(AppPredefinedSize.md),
@@ -109,7 +109,7 @@ class AnalyticsPage extends ConsumerWidget {
                     ),
                   ),
                   // No Data UI
-                  if (!hasData)
+                  if (data.isEmpty)
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -142,16 +142,17 @@ class AnalyticsPage extends ConsumerWidget {
                 ),
               ],
             ),
-            if (data.isNotEmpty)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  createShortUrlButton(context, ref),
-                  AppSizedBox.xl(
-                    horizontal: true,
-                  )
-                ],
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                AppDateRangeSelector(keyId: DateRangeKey.totalAnalytics.getKey()),
+                if (data.isNotEmpty) createShortUrlButton(context, ref),
+                if (data.isEmpty) AppSizedBox.xl(horizontal: true),
+                AppSizedBox.xl(
+                  horizontal: true,
+                )
+              ],
+            ),
           ],
         ),
         loading: () => const Center(child: CircularProgressIndicator()),
@@ -360,5 +361,4 @@ class AnalyticsPage extends ConsumerWidget {
       );
     });
   }
-
 }

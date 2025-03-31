@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_portfolio_flutter/linklytics/design_system/app_button.dart';
+import 'package:my_portfolio_flutter/linklytics/design_system/app_date_range_selector.dart';
 import 'package:my_portfolio_flutter/linklytics/design_system/app_fade_in_widget.dart';
 import 'package:my_portfolio_flutter/linklytics/design_system/app_hyperlink.dart';
 import 'package:my_portfolio_flutter/linklytics/design_system/app_sized_box.dart';
@@ -145,6 +146,9 @@ class LinkStorybookApp extends StatelessWidget {
           ),
         ),
         ...appSizedBoxStories,
+
+        // DATE RANGE SELECTOR
+        ...dateRangeStories,
       ],
     );
   }

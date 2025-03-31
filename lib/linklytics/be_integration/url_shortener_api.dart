@@ -7,6 +7,7 @@ import 'package:my_portfolio_flutter/linklytics/provider/dio_provider.dart';
 import 'package:my_portfolio_flutter/linklytics/provider/shared_preferences_provider.dart';
 import 'package:my_portfolio_flutter/routes/linklytics_routes.dart';
 
+import 'shorten_analytics_response.dart';
 import 'shorten_url_response.dart';
 
 final urlShortenerApiProvider = Provider<UrlShortenerApi>((ref) {
@@ -106,7 +107,49 @@ class UrlShortenerApi {
     }
     ShortenUrlResponse apiResponse = ShortenUrlResponse.fromJson(response.data);
 
-    return '${getCurrentDomain()}/${LinkLyticsUri.urly.uri}?${apiResponse.shortUrl}';
+    return '${getCurrentDomain()}/${LinkLyticsUri.urly.uri}?q=${apiResponse.shortUrl}';
+  }
+
+  Future<List<ShortenUrlResponse>> getAllShorten() async {
+    String? token = _prefsService?.getJwtToken();
+
+    Response? response = await performDioAction(() => _dio.get(
+          ApiRouteName.getShortenUrls.getFullPath(),
+          queryParameters: {
+            'startDate': '2025-01-10',
+            'endDate': '2025-12-30',
+          },
+          options: Options(headers: {'Authorization': 'Bearer $token'}),
+        ));
+
+    if (response == null || response.data == null || response.data.isEmpty) {
+      return [];
+    }
+
+    final data = response.data as List<dynamic>;
+    return data.map((o) => ShortenUrlResponse.fromJson(o)).toList();
+  }
+
+  Future<List<ShortenAnalyticsResponse>> getShortenAnalyticsByKey(
+      String value) async {
+    String? token = _prefsService?.getJwtToken();
+
+    Response? response = await performDioAction(() => _dio.get(
+          ApiRouteName.getAnalyticsShortenUrl
+              .applyParams({'shortenKey': value}),
+          queryParameters: {
+            'startDate': '2025-01-10T00:00:00',
+            'endDate': '2025-12-30T00:00:00',
+          },
+          options: Options(headers: {'Authorization': 'Bearer $token'}),
+        ));
+
+    if (response == null) {
+      return [];
+    }
+
+    final data = response.data as List<dynamic>;
+    return data.map((o) => ShortenAnalyticsResponse.fromJson(o)).toList();
   }
 
   Future<Response?> performDioAction(

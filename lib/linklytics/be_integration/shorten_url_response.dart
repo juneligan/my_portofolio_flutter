@@ -4,10 +4,19 @@ part 'shorten_url_response.g.dart';
 
 @JsonSerializable()
 class ShortenUrlResponse {
+  final int id;
   final String originalUrl;
   final String shortUrl;
+  final int clickCount;
+  final DateTime createdDate;
 
-  ShortenUrlResponse({required this.originalUrl, required this.shortUrl});
+  ShortenUrlResponse({
+    required this.id,
+    required this.clickCount,
+    required this.createdDate,
+    required this.originalUrl,
+    required this.shortUrl,
+  });
 
   factory ShortenUrlResponse.fromJson(Map<String, dynamic> json) =>
       _$ShortenUrlResponseFromJson(json);
