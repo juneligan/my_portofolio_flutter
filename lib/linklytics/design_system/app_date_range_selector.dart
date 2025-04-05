@@ -115,25 +115,27 @@ class DateRangeNotifier extends StateNotifier<Map<String, DateRangeState>> {
   DateRangeNotifier() : super({});
 
   void setStartDate(String key, DateTime date, DateRangePreset preset) {
+    if (state[key]?.startDate == date) return; // Avoid redundant state updates
     if (state[key]?.endDate == null ||
         date.isBefore(state[key]!.endDate!) ||
         date.isAtSameMomentAs(state[key]!.endDate!)) {
       state = {
         ...state,
-        key: state[key]?.copyWith(startDate: date, preset: preset) ??
-            DateRangeState(startDate: date, preset: preset),
+        key: (state[key] ?? DateRangeState())
+            .copyWith(startDate: date, preset: preset)
       };
     }
   }
 
   void setEndDate(String key, DateTime date, DateRangePreset preset) {
+    if (state[key]?.endDate == date) return; // Avoid redundant state updates
     if (state[key]?.startDate == null ||
         date.isAfter(state[key]!.startDate!) ||
         date.isAtSameMomentAs(state[key]!.startDate!)) {
       state = {
         ...state,
-        key: state[key]?.copyWith(endDate: date, preset: preset) ??
-            DateRangeState(endDate: date, preset: preset),
+        key: (state[key] ?? DateRangeState())
+            .copyWith(endDate: date, preset: preset)
       };
     }
   }
@@ -171,13 +173,14 @@ class AppDateRangeSelector extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // final selectedPreset = ref.watch(dateRangePresetProvider);
-    final dateState = ref.watch(dateRangeProvider);
+    final dateState = ref.watch(
+      dateRangeProvider.select((state) => state[keyId] ?? DateRangeState()),
+    );
     final notifier = ref.read(dateRangeProvider.notifier);
 
-    final selectedPreset = dateState[keyId]?.preset;
-    final startDate = dateState[keyId]?.startDate;
-    final endDate = dateState[keyId]?.endDate;
+    final selectedPreset = dateState.preset;
+    final startDate = dateState.startDate;
+    final endDate = dateState.endDate;
 
     void updateDateRange(DateRangePreset preset) {
       switch (preset) {
@@ -242,7 +245,7 @@ class AppDateRangeSelector extends ConsumerWidget {
         _buildDateSelector(
           context,
           'Start Date',
-          dateState[keyId]?.startDate,
+          dateState.startDate,
           (date) {
             if (endDate == null ||
                 date.isBefore(endDate) ||
@@ -304,6 +307,8 @@ class AppDateRangeSelector extends ConsumerWidget {
       ),
     );
   }
+
+
 }
 
 final dateRangeStories = [

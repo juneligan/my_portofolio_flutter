@@ -112,7 +112,15 @@ class OtpLoginPageV2 extends ConsumerWidget {
               type: TextType.sm,
               color: state.isOtpResendEnabled ? Colors.green : Colors.grey,
             ),
-          ] // If statement
+          ], // If statement
+
+          AppSizedBox.sm(),
+          AppHyperlink(
+            OtpLoginText.goBackLogin.en,
+            onTap: () => context.go(LinkLyticsUri.login.uri),
+            // type: TextType.sm,
+            color: Colors.blue,
+          ),
         ]),
       ),
     );

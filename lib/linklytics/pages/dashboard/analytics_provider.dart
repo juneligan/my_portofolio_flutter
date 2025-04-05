@@ -1,11 +1,14 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:my_portfolio_flutter/linklytics/be_integration/url_shortener_api.dart';
+import 'package:my_portfolio_flutter/linklytics/design_system/app_date_range_selector.dart';
 
 import 'anaylytics_data.dart';
 
 final analyticsProvider = StateNotifierProvider<AnalyticsNotifier,
     AsyncValue<List<TotalClickEventResponse>>>(
-  (ref) => AnalyticsNotifier(ref.watch(urlShortenerApiProvider)),
+  (ref) {
+    return AnalyticsNotifier(ref.watch(urlShortenerApiProvider));
+  }
 );
 
 class AnalyticsNotifier
@@ -16,13 +19,11 @@ class AnalyticsNotifier
     fetchAnalytics();
   }
 
-  Future<void> fetchAnalytics() async {
+  Future<void> fetchAnalytics({DateRangeState? dateRange}) async {
     try {
       // Simulating an API call
       await Future.delayed(const Duration(seconds: 2));
-
-      final response = await _urlShortenerApi.getUrlAnalyticsData();
-      // Convert Map<String, int> → List<TotalClickEventResponse>
+      final response = await _urlShortenerApi.getUrlAnalyticsData(dateRange);
 
       state = AsyncData(response);
     } catch (e) {

@@ -74,7 +74,7 @@ class DashboardPage extends ConsumerWidget {
       ),
       actions: [
         TextButton(
-          onPressed: () => context.go(LinkLyticsUri.otpLogin.uri),
+          onPressed: () => context.go(LinkLyticsUri.login.uri),
           child: AppText("Login", type: TextType.md),
         ),
       ],

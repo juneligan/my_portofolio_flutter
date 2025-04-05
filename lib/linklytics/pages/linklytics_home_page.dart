@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:my_portfolio_flutter/linklytics/constants/app_spacing.dart';
 import 'package:my_portfolio_flutter/linklytics/design_system/app_fade_in_widget.dart';
 import 'package:my_portfolio_flutter/linklytics/i18/texts.dart';
@@ -8,6 +9,9 @@ import 'package:my_portfolio_flutter/linklytics/design_system/app_sized_box.dart
 import 'package:my_portfolio_flutter/linklytics/design_system/app_text.dart';
 import 'package:my_portfolio_flutter/linklytics/design_system/app_text_styles.dart';
 import 'package:my_portfolio_flutter/linklytics/widgets/feature_card.dart';
+import 'package:my_portfolio_flutter/routes/linklytics_routes.dart';
+
+import 'dashboard/analytics_page.dart';
 
 class LinklyticsHomePage extends ConsumerWidget {
   const LinklyticsHomePage({super.key});
@@ -42,14 +46,18 @@ class LinklyticsHomePage extends ConsumerWidget {
                     children: [
                       AppButton(
                         HomePageText.manageLinks.en,
-                        onPressed: () {},
+                        onPressed: () {
+                          context.go(LinkLyticsUri.dashboard.uri);
+                        },
                         type: ButtonType.gradient,
                         size: ButtonSize.medium,
                       ),
                       AppSizedBox.sm(horizontal: true),
                       AppButton(
                         HomePageText.createShortLink.en,
-                        onPressed: () {},
+                        onPressed: () {
+                          showShortenUrlDialog(context, ref);
+                        },
                         type: ButtonType.primary,
                         isOutlined: true,
                         textStyle: AppTextStyles.textTheme.bodyLarge,

@@ -67,6 +67,14 @@ class RouteConfig {
                   builder: (context, state) => const ButtonShowcase(),
                 )
               ]),
+          GoRoute(
+              path: '${LinkLyticsUri.uly.path}/:shortUrl',
+              name: LinkLyticsUri.uly.toString(),
+              pageBuilder: (context, state) {
+
+                final shortUrl = state.pathParameters['shortUrl'];
+                return NoTransitionPage(child: UrlRedirectionPage(shortUrl: shortUrl,));
+              }),
           ShellRoute(
               builder: (context, state, child) {
                 return MainLayout(
@@ -101,10 +109,6 @@ class RouteConfig {
                 buildLinkLyticsRoute(
                   LinkLyticsUri.dashboard,
                   DashboardPage(),
-                ),
-                buildLinkLyticsRoute(
-                  LinkLyticsUri.urly,
-                  UrlRedirectionPage(),
                 ),
               ]),
         ]);

@@ -1,7 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:my_portfolio_flutter/linklytics/be_integration/api_route_names.dart';
 import 'package:my_portfolio_flutter/linklytics/constants/config.dart';
+import 'package:my_portfolio_flutter/linklytics/design_system/app_date_range_selector.dart';
 import 'package:my_portfolio_flutter/linklytics/pages/dashboard/anaylytics_data.dart';
 import 'package:my_portfolio_flutter/linklytics/provider/dio_provider.dart';
 import 'package:my_portfolio_flutter/linklytics/provider/shared_preferences_provider.dart';
@@ -23,6 +25,7 @@ final urlShortenerApiProvider = Provider<UrlShortenerApi>((ref) {
 });
 
 class UrlShortenerApi {
+  final String _dateFormat = 'yyyy-MM-dd';
   final Dio _dio;
   final SharedPreferencesService? _prefsService;
 
@@ -36,16 +39,17 @@ class UrlShortenerApi {
   //   "2024-07-04": 10,
   //   "2024-07-05": 17,
   // };
-  Future<List<TotalClickEventResponse>> getUrlAnalyticsData() async {
+  Future<List<TotalClickEventResponse>> getUrlAnalyticsData(
+      DateRangeState? dateRange) async {
     String? token = _prefsService?.getJwtToken();
     try {
       Response response = await _dio.get('/api/urls/analytics/total-clicks',
           options: Options(headers: {'Authorization': 'Bearer $token'}),
 
           /// startDate=2025-01-10&endDate=2025-12-30
-          queryParameters: {
-            'startDate': '2025-01-10',
-            'endDate': '2025-12-30',
+          queryParameters: dateRange == null ? null : {
+            'startDate': DateFormat(_dateFormat).format(dateRange.startDate!),
+            'endDate': DateFormat(_dateFormat).format(dateRange.endDate!),
           });
 
       // ✅ Print request method & URL
@@ -107,11 +111,15 @@ class UrlShortenerApi {
     }
     ShortenUrlResponse apiResponse = ShortenUrlResponse.fromJson(response.data);
 
-    return '${getCurrentDomain()}/${LinkLyticsUri.urly.uri}?q=${apiResponse.shortUrl}';
+    return '${LinkLyticsUri.uly.shortenPath }/${apiResponse.shortUrl}';
   }
 
   Future<List<ShortenUrlResponse>> getAllShorten() async {
     String? token = _prefsService?.getJwtToken();
+
+    if (token == null || token.isEmpty) {
+      return Future.value([]);
+    }
 
     Response? response = await performDioAction(() => _dio.get(
           ApiRouteName.getShortenUrls.getFullPath(),
@@ -123,7 +131,7 @@ class UrlShortenerApi {
         ));
 
     if (response == null || response.data == null || response.data.isEmpty) {
-      return [];
+      return Future.value([]);
     }
 
     final data = response.data as List<dynamic>;
@@ -150,6 +158,22 @@ class UrlShortenerApi {
 
     final data = response.data as List<dynamic>;
     return data.map((o) => ShortenAnalyticsResponse.fromJson(o)).toList();
+  }
+
+  Future<void> redirectToUrl(String value) async {
+    String? token = _prefsService?.getJwtToken();
+
+    Response? response = await performDioAction(() => _dio.get(
+          ApiRouteName.redirectToUrl
+              .applyParams({'shortUrl': value}),
+          options: Options(headers: {'Authorization': 'Bearer $token'}),
+        ));
+
+    if (response == null) {
+      return;
+    }
+
+    return;
   }
 
   Future<Response?> performDioAction(

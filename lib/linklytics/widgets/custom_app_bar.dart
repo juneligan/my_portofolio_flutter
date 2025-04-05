@@ -81,7 +81,7 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
       padding: EdgeInsets.symmetric(horizontal: AppPredefinedSize.md),
       child: AppButton(
         isTokenExpired == null || isTokenExpired
-            ? AppBarText.signIn.en
+            ? '${AppBarText.signIn.en}/${AppBarText.signUp.en}'
             : AppBarText.signOut.en,
         onPressed: () {
           if (isTokenExpired == null || !isTokenExpired) {
@@ -89,7 +89,7 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
           }
           context.go(
             isTokenExpired == null || isTokenExpired
-                ? LinkLyticsUri.otpLogin.uri
+                ? LinkLyticsUri.login.uri
                 : LinkLyticsUri.base.uri,
           );
         },

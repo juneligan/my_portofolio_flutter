@@ -58,7 +58,6 @@ class OtpLoginState {
   }
 
   reset() {
-
     copyWith(
       showVerifier: false,
       isOtpResendEnabled: false,

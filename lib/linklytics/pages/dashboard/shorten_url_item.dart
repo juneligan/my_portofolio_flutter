@@ -5,6 +5,12 @@ import 'package:intl/intl.dart';
 import 'package:my_portfolio_flutter/linklytics/be_integration/shorten_analytics_response.dart';
 import 'package:my_portfolio_flutter/linklytics/be_integration/shorten_url_response.dart';
 import 'package:my_portfolio_flutter/linklytics/be_integration/url_shortener_api.dart';
+import 'package:my_portfolio_flutter/linklytics/constants/config.dart';
+import 'package:my_portfolio_flutter/linklytics/design_system/app_date_range_selector.dart';
+import 'package:my_portfolio_flutter/linklytics/design_system/app_text.dart';
+import 'package:my_portfolio_flutter/linklytics/pages/dashboard/analytics_page.dart';
+import 'package:my_portfolio_flutter/linklytics/pages/dashboard/anaylytics_data.dart';
+import 'package:my_portfolio_flutter/routes/linklytics_routes.dart';
 
 final shortenUrlsProvider = StateNotifierProvider<ShortenUrlsNotifier,
     AsyncValue<List<ShortenUrlResponse>>>(
@@ -20,6 +26,9 @@ class ShortenUrlsNotifier
   }
 
   Future<void> fetchAllShortenUrls() async {
+    if (!mounted) {
+      return;
+    }
     try {
       // Simulating an API call
       await Future.delayed(const Duration(seconds: 2));
@@ -27,8 +36,16 @@ class ShortenUrlsNotifier
       final response = await _urlShortenerApi.getAllShorten();
       // Convert Map<String, int> → List<TotalClickEventResponse>
 
+      if (!mounted) {
+        // ✅ Check after async calls
+        return;
+      }
       state = AsyncData(response);
     } catch (e) {
+      if (!mounted) {
+        // ✅ Also guard here
+        return;
+      }
       state = AsyncError(e, StackTrace.current);
     }
   }
@@ -44,6 +61,7 @@ class AnalyticsShortenNotifier extends StateNotifier<Map<int, bool>> {
   AnalyticsShortenNotifier() : super({});
 
   void toggleAnalytics(int urlId) {
+    print('URL ID --------->$urlId');
     state = {
       ...state,
       urlId: !(state[urlId] ?? false),
@@ -67,13 +85,13 @@ class ShortUrlBox extends ConsumerWidget {
   final DateTime creationDate;
 
   const ShortUrlBox({
-    Key? key,
+    super.key,
     required this.shortUrl,
     required this.originalUrl,
     required this.urlId,
     required this.clickCount,
     required this.creationDate,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -97,9 +115,8 @@ class ShortUrlBox extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     InkWell(
-                      onTap: () =>
-                          Clipboard.setData(ClipboardData(text: shortUrl)),
-                      child: Text(shortUrl,
+                      onTap: () => Clipboard.setData(copyToClipboard()),
+                      child: Text('${LinkLyticsUri.uly.shortenPath}/$shortUrl',
                           style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -124,7 +141,7 @@ class ShortUrlBox extends ConsumerWidget {
                   children: [
                     ElevatedButton(
                       onPressed: () async {
-                        await Clipboard.setData(ClipboardData(text: shortUrl));
+                        await Clipboard.setData(copyToClipboard());
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text('Copied to clipboard!')),
                         );
@@ -147,20 +164,40 @@ class ShortUrlBox extends ConsumerWidget {
             if (isAnalyticsVisible) ...[
               Divider(),
               analyticsData.when(
-                data: (data) => Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: data
-                      .map((entry) => Text(
-                          'Date: ${entry.clickDate}, Clicks: ${entry.count}'))
-                      .toList(),
-                ),
+                data: (data) {
+                  return data.isEmpty
+                      ? AppText('No Record', type: TextType.md)
+                      : buildGraph(
+                          context,
+                          ref,
+                          data
+                              .map((entry) => TotalClickEventResponse
+                                  .fromShortenAnalyticsResponse(entry))
+                              .toList(),
+                          false,
+                        );
+                },
                 loading: () => Center(child: CircularProgressIndicator()),
                 error: (err, _) => Text('Failed to load analytics'),
               ),
+              // _buildDateRangeForSpecificUrl(ref, urlId)
             ],
           ],
         ),
       ),
     );
+  }
+
+  ClipboardData copyToClipboard() {
+    return ClipboardData(text: '${LinkLyticsUri.uly.shortenPath}/$shortUrl');
+  }
+
+  _buildDateRangeForSpecificUrl(WidgetRef ref, int urlId) {
+    final analyticDateRangeState = ref.watch(
+      dateRangeProvider.select((state) =>
+          state[DateRangeKey.shortAnalytics.getIndexedKey('$urlId')]),
+    );
+
+    // buildDateRange(context, ref, notifier, dateState, data)
   }
 }

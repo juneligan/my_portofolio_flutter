@@ -13,7 +13,9 @@ enum AppBarText {
   home('Home'),
   about('About'),
   signIn('SignIn'),
-  signOut('SignOut');
+  signOut('SignOut'),
+  signUp('SignUp'),
+  ;
 
   const AppBarText(this.en);
   final String en;
@@ -36,6 +38,7 @@ enum OtpLoginText {
   resend('Resend Otp'),
   retry('Retry in {0} seconds'),
   changeNumber('Change Phone Number?'),
+  goBackLogin('Try logging in with password'),
   ;
   
   const OtpLoginText(this.en);

@@ -1,5 +1,7 @@
 // path
 
+import 'package:my_portfolio_flutter/linklytics/constants/config.dart';
+
 class LinklyticsPath {
   // static const String linklyticsBasePath = "/linklytics";
   static const String linklyticsHomePath = "";
@@ -21,7 +23,7 @@ enum LinkLyticsUri {
   register('/register'),
   storybook('/storybook'),
   logout('/logout'),
-  urly('/urly')
+  uly('/u.ly')
   ;
 
   const LinkLyticsUri(this.path);
@@ -33,5 +35,13 @@ enum LinkLyticsUri {
     }
 
     return '${LinkLyticsUri.base.path}$path';
+  }
+
+  String get fullPath {
+    return '${getCurrentDomain()}/#$uri';
+  }
+
+  String get shortenPath {
+    return '${getCurrentDomain()}/#$path';
   }
 }
